@@ -99,6 +99,7 @@ public class AddressBook {
     private static final String COMMAND_ADD_EXAMPLE = COMMAND_ADD_WORD + " John Doe p/98765432 e/johnd@gmail.com";
 
     private static final String COMMAND_FIND_WORD = "find";
+    private static final String COMMAND_FIND_LOWER_WORD = "findLower";
     private static final String COMMAND_FIND_DESC = "Finds all persons whose names contain any of the specified "
                                         + "keywords (case-sensitive) and displays them as a list with index numbers.";
     private static final String COMMAND_FIND_PARAMETERS = "KEYWORD [MORE_KEYWORDS]";
@@ -358,6 +359,8 @@ public class AddressBook {
             return executeAddPerson(commandArgs);
         case COMMAND_FIND_WORD:
             return executeFindPersons(commandArgs);
+        case COMMAND_FIND_LOWER_WORD:
+            return executeLowerFindPersons(commandArgs);
         case COMMAND_LIST_WORD:
             return executeListAllPersonsInAddressBook();
         case COMMAND_DELETE_WORD:
@@ -442,6 +445,20 @@ public class AddressBook {
     }
 
     /**
+     * Finds and lists all persons in address book whose name contains any of the argument keywords.
+     * Keyword matching is not case sensitive.
+     *
+     * @param commandArgs full command args string from the user
+     * @return feedback display message for the operation result
+     */
+    private static String executeLowerFindPersons(String commandArgs) {
+        final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs);
+        final ArrayList<HashMap<PersonProperty, String>> personsFound = getPersonsWithNameContainingAnyLowerKeyword(keywords);
+        showToUser(personsFound);
+        return getMessageForPersonsDisplayedSummary(personsFound);
+    }
+
+    /**
      * Constructs a feedback message to summarise an operation that displayed a listing of persons.
      *
      * @param personsDisplayed used to generate summary
@@ -472,6 +489,27 @@ public class AddressBook {
         for (HashMap<PersonProperty, String> person : getAllPersonsInAddressBook()) {
             final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
             if (!Collections.disjoint(wordsInName, keywords)) {
+                matchedPersons.add(person);
+            }
+        }
+        return matchedPersons;
+    }
+
+    /**
+     * Retrieves all persons in the full model whose names contain some of the specified keywords that is not case sensitive.
+     *
+     * @param keywords for searching
+     * @return list of persons in full model with name containing some of the keywords
+     */
+    private static ArrayList<HashMap<PersonProperty, String>> getPersonsWithNameContainingAnyLowerKeyword(Collection<String> keywords) {
+        Set<String> lowerKeywords = new HashSet<>();
+        for (String keyword : keywords) {
+            lowerKeywords.add(keyword.toLowerCase());
+        }
+        final ArrayList<HashMap<PersonProperty, String>> matchedPersons = new ArrayList<>();
+        for (HashMap<PersonProperty, String> person : getAllPersonsInAddressBook()) {
+            final Set<String> wordsInName = new HashSet<>(splitByWhitespace((getNameFromPerson(person)).toLowerCase()));
+            if (!Collections.disjoint(wordsInName, lowerKeywords)) {
                 matchedPersons.add(person);
             }
         }
