@@ -196,6 +196,13 @@ public class AddressBook {
         showWelcomeMessage();
         processProgramArgs(args);
         loadDataFromStorage();
+        enterUserInput();
+    }
+
+    /**
+     * Continuously ask for user input and feedback until user stops the program
+     */
+    private static void enterUserInput() {
         while (true) {
             String userCommand = getUserInput();
             echoUserCommand(userCommand);
