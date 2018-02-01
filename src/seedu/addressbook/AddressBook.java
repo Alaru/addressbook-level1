@@ -107,11 +107,16 @@ public class AddressBook {
     private static final String COMMAND_ADD_EXAMPLE = COMMAND_ADD_WORD + " John Doe p/98765432 e/johnd@gmail.com";
 
     private static final String COMMAND_FIND_WORD = "find";
-    private static final String COMMAND_FIND_LOWER_WORD = "findLower";
     private static final String COMMAND_FIND_DESC = "Finds all persons whose names contain any of the specified "
                                         + "keywords (case-sensitive) and displays them as a list with index numbers.";
     private static final String COMMAND_FIND_PARAMETERS = "KEYWORD [MORE_KEYWORDS]";
     private static final String COMMAND_FIND_EXAMPLE = COMMAND_FIND_WORD + " alice bob charlie";
+
+    private static final String COMMAND_FIND_ALL_WORD = "findAll";
+    private static final String COMMAND_FIND_ALL_DESC = "Finds all persons whose names contain any of the specified "
+                                        + "keywords (non case-sensitive) and displays them as a list with index numbers.";
+    private static final String COMMAND_FIND_ALL_PARAMETERS = "KEYWORD [MORE_KEYWORDS]";
+    private static final String COMMAND_FIND_ALL_EXAMPLE = COMMAND_FIND_ALL_WORD + " alice bob charlie";
 
     private static final String COMMAND_LIST_WORD = "list";
     private static final String COMMAND_LIST_DESC = "Displays all persons as a list with index numbers.";
@@ -374,8 +379,8 @@ public class AddressBook {
             return executeAddPerson(commandArgs);
         case COMMAND_FIND_WORD:
             return executeFindPersons(commandArgs);
-        case COMMAND_FIND_LOWER_WORD:
-            return executeLowerFindPersons(commandArgs);
+        case COMMAND_FIND_ALL_WORD:
+            return executeFindAllPersons(commandArgs);
         case COMMAND_LIST_WORD:
             return executeListAllPersonsInAddressBook();
         case COMMAND_DELETE_WORD:
@@ -466,7 +471,7 @@ public class AddressBook {
      * @param commandArgs full command args string from the user
      * @return feedback display message for the operation result
      */
-    private static String executeLowerFindPersons(String commandArgs) {
+    private static String executeFindAllPersons(String commandArgs) {
         final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs);
         final ArrayList<HashMap<PersonProperty, String>> personsFound = getPersonsWithNameContainingAnyLowerKeyword(keywords);
         showToUser(personsFound);
@@ -1122,6 +1127,7 @@ public class AddressBook {
     private static String getUsageInfoForAllCommands() {
         return getUsageInfoForAddCommand() + LS
                 + getUsageInfoForFindCommand() + LS
+                + getUsageInfoForFindAllCommand() + LS
                 + getUsageInfoForViewCommand() + LS
                 + getUsageInfoForDeleteCommand() + LS
                 + getUsageInfoForClearCommand() + LS
@@ -1141,6 +1147,13 @@ public class AddressBook {
         return String.format(MESSAGE_COMMAND_HELP, COMMAND_FIND_WORD, COMMAND_FIND_DESC) + LS
                 + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_FIND_PARAMETERS) + LS
                 + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_FIND_EXAMPLE) + LS;
+    }
+
+    /** Returns the string for showing 'findAll' command usage instruction */
+    private static String getUsageInfoForFindAllCommand() {
+        return String.format(MESSAGE_COMMAND_HELP, COMMAND_FIND_ALL_WORD, COMMAND_FIND_ALL_DESC) + LS
+                + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_FIND_ALL_PARAMETERS) + LS
+                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_FIND_ALL_EXAMPLE) + LS;
     }
 
     /** Returns the string for showing 'delete' command usage instruction */

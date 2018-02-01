@@ -62,6 +62,26 @@
   find Charlie Betsy
 
 ##########################################################
+# test find persons command
+##########################################################
+
+  # should match none with no keywords
+  findAll
+  # should only match full words in person names
+  findAll bet
+  # does not match if none have keyword
+  findAll 23912039120
+  # matching should not be case-sensitive
+  findAll betsy
+
+  # find unique keyword
+  findAll Betsy
+  # find multiple with same keyword
+  findAll dickson
+  # find multiple with some keywords of different caps
+  findAll Charlie betsy
+
+##########################################################
 # test delete person command
 ##########################################################
 
